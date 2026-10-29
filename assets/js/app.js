@@ -3,11 +3,13 @@ const preview = document.querySelector("#markdown-preview");
 const scriptPromises = new Map();
 const stylePromises = new Map();
 const featurePromises = new Map();
+const themeToggle = document.querySelector("#theme-toggle");
 let corePromise;
 let graphvizInstance;
 let renderVersion = 0;
 let activeCharts = [];
 let definitionListRegistered = false;
+let activeHighlightTheme;
 
 const assets = {
   marked: {
@@ -104,7 +106,7 @@ function loadScript(name) {
   return scriptPromises.get(name);
 }
 
-function loadStyle(name, url, integrity) {
+function loadStyle(name, url, integrity, attributes = {}) {
   if (!stylePromises.has(name)) {
     const promise = new Promise((resolve, reject) => {
       const link = document.createElement("link");
@@ -112,6 +114,9 @@ function loadStyle(name, url, integrity) {
       link.href = url;
       link.integrity = integrity;
       link.crossOrigin = "anonymous";
+      Object.entries(attributes).forEach(([key, value]) => {
+        link.dataset[key] = value;
+      });
       link.onload = () => resolve();
       link.onerror = () => {
         link.remove();
@@ -162,18 +167,20 @@ function ensureCore() {
   return corePromise;
 }
 
-function ensureMermaid() {
-  return loadFeature("mermaid", async () => {
+async function ensureMermaid(theme) {
+  await loadFeature("mermaid", async () => {
     await loadScript("mermaid");
     if (!window.mermaid) {
       throw new Error("A Mermaid könyvtár nem érhető el.");
     }
-    mermaid.initialize({
-      startOnLoad: false,
-      securityLevel: "strict",
-      htmlLabels: false,
-      flowchart: { htmlLabels: false },
-    });
+  });
+
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: "strict",
+    theme: theme === "dark" ? "dark" : "default",
+    htmlLabels: false,
+    flowchart: { htmlLabels: false },
   });
 }
 
@@ -205,20 +212,50 @@ function ensureFootnotes() {
   });
 }
 
-function ensureHighlight() {
-  return loadFeature("highlight", async () => {
-    await Promise.all([
-      loadScript("highlight"),
-      loadStyle(
-        "Highlight.js",
-        "https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/github.min.css",
-        "sha384-eFTL69TLRZTkNfYZOLM+G04821K1qZao/4QLJbet1pP4tcF+fdXq/9CdqAbWRl/L",
-      ),
-    ]);
+async function ensureHighlight(theme) {
+  await loadFeature("highlight", async () => {
+    await loadScript("highlight");
     if (!window.hljs) {
       throw new Error("A szintaxiskiemelő könyvtár nem érhető el.");
     }
   });
+
+  const stylesheet =
+    theme === "dark"
+      ? {
+          name: "Highlight.js dark",
+          url: "https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/github-dark.min.css",
+          integrity:
+            "sha384-wH75j6z1lH97ZOpMOInqhgKzFkAInZPPSPlZpYKYTOqsaizPvhQZmAtLcPKXpLyH",
+        }
+      : {
+          name: "Highlight.js light",
+          url: "https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/github.min.css",
+          integrity:
+            "sha384-eFTL69TLRZTkNfYZOLM+G04821K1qZao/4QLJbet1pP4tcF+fdXq/9CdqAbWRl/L",
+        };
+
+  await loadStyle(
+    stylesheet.name,
+    stylesheet.url,
+    stylesheet.integrity,
+    { highlightTheme: theme },
+  );
+  if (document.documentElement.dataset.theme !== theme) {
+    return;
+  }
+
+  document
+    .querySelectorAll(
+      `link[data-highlight-theme]:not([data-highlight-theme="${theme}"])`,
+    )
+    .forEach((link) => {
+      stylePromises.delete(
+        theme === "dark" ? "Highlight.js light" : "Highlight.js dark",
+      );
+      link.remove();
+    });
+  activeHighlightTheme = theme;
 }
 
 function ensureChart() {
@@ -413,6 +450,43 @@ function showError(error) {
   preview.classList.add("empty-state");
 }
 
+function updateThemeButton(theme) {
+  if (!themeToggle) {
+    return;
+  }
+
+  const isDark = theme === "dark";
+  themeToggle.setAttribute("aria-pressed", String(isDark));
+  themeToggle.setAttribute(
+    "aria-label",
+    isDark ? "Világos mód bekapcsolása" : "Sötét mód bekapcsolása",
+  );
+  themeToggle.title = isDark
+    ? "Világos mód bekapcsolása"
+    : "Sötét mód bekapcsolása";
+  themeToggle.querySelector(".theme-icon").textContent = isDark ? "☀" : "☾";
+  themeToggle.querySelector(".theme-label").textContent = isDark
+    ? "Világos mód"
+    : "Sötét mód";
+}
+
+function setTheme(theme, persist = false) {
+  document.documentElement.dataset.theme = theme;
+  updateThemeButton(theme);
+
+  if (persist) {
+    try {
+      localStorage.setItem("markdown-preview-theme", theme);
+    } catch (error) {
+      console.warn("A témaválasztást nem sikerült elmenteni.", error);
+    }
+  }
+
+  if (activeHighlightTheme && activeHighlightTheme !== theme) {
+    void ensureHighlight(theme).catch(showError);
+  }
+}
+
 async function renderMarkdown() {
   if (!input || !preview) {
     throw new Error("A Markdown szerkesztő vagy az előnézet nem található.");
@@ -456,12 +530,13 @@ async function renderMarkdown() {
     );
     const hasKatex = markdown.includes("$");
     const hasFootnotes = /\[\^[^\]]+\]/.test(markdown);
+    const theme = document.documentElement.dataset.theme || "light";
 
     await Promise.all([
-      ...(hasMermaid ? [ensureMermaid()] : []),
+      ...(hasMermaid ? [ensureMermaid(theme)] : []),
       ...(hasGraphviz ? [ensureGraphviz()] : []),
       ...(hasChart ? [ensureChart()] : []),
-      ...(hasHighlight ? [ensureHighlight()] : []),
+      ...(hasHighlight ? [ensureHighlight(theme)] : []),
       ...(hasKatex ? [ensureKatex()] : []),
       ...(hasFootnotes ? [ensureFootnotes()] : []),
     ]);
@@ -523,6 +598,30 @@ async function renderMarkdown() {
               options: {
                 responsive: true,
                 maintainAspectRatio: true,
+                color: theme === "dark" ? "#d0d3dc" : "#666",
+                scales:
+                  config.type === "pie" ||
+                  config.type === "doughnut" ||
+                  config.type === "polarArea"
+                    ? undefined
+                    : {
+                        x: {
+                          ticks: {
+                            color: theme === "dark" ? "#d0d3dc" : "#666",
+                          },
+                          grid: {
+                            color: theme === "dark" ? "#343946" : "#e1e3e8",
+                          },
+                        },
+                        y: {
+                          ticks: {
+                            color: theme === "dark" ? "#d0d3dc" : "#666",
+                          },
+                          grid: {
+                            color: theme === "dark" ? "#343946" : "#e1e3e8",
+                          },
+                        },
+                      },
               },
             }),
           );
@@ -566,6 +665,14 @@ const versionLabel = document.querySelector("#app-version");
 if (versionLabel && appVersion) {
   versionLabel.textContent = `v${appVersion}`;
 }
+
+setTheme(document.documentElement.dataset.theme || "light");
+themeToggle?.addEventListener("click", () => {
+  const nextTheme =
+    document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  setTheme(nextTheme, true);
+  void renderMarkdown();
+});
 
 input?.addEventListener("input", renderMarkdown);
 void renderMarkdown();

@@ -2,7 +2,9 @@
 
 Egyszerű, valós idejű Markdown előnézet két panellel, fejlett Markdown-kiegészítések támogatásával. Nincs szükség buildre vagy telepítésre; a projekt GitHub Pages-en statikus weboldalként publikálható.
 
-Aktuális verzió: **1.1.1**. A verzió az oldal fejlécében is látható; a kiadások változásait a [CHANGELOG.md](./CHANGELOG.md) követi.
+Aktuális verzió: **1.2.0**. A verzió az oldal fejlécében is látható; a kiadások változásait a [CHANGELOG.md](./docs/CHANGELOG.md) követi.
+
+Az alkalmazás automatikusan a rendszer színsémáját használja első látogatáskor. A fejlécben található gombbal válthatsz világos és sötét mód között; a választást elmenti a böngésző.
 
 ## Futtatás
 
@@ -67,8 +69,8 @@ flowchart LR
 2. A repozitórium **Settings → Pages** oldalán válaszd ki a publikálási forrást.
 3. Állítsd be a `main` ágat és a gyökérkönyvtárat (`/`), majd mentsd el.
 
-Az `index.html` és a hozzá tartozó fájlok a gyökérkönyvtárban vannak, így további build- vagy deploy-konfiguráció nem szükséges.
+Az `index.html` belépési pont a gyökérkönyvtárban marad. Az alkalmazáskód az `assets/` alatt, a változásnapló pedig a `docs/` mappában található; további build- vagy deploy-konfiguráció nem szükséges.
 
 ## Verziózás
 
-A projekt SemVer formátumú verziót használ (`MAJOR.MINOR.PATCH`). A megjelenített verziót az `index.html` `app-version` meta mezőjében kell frissíteni, a változásokat pedig a `CHANGELOG.md` fájlban kell rögzíteni. A GitHub Pages az új verziót akkor jeleníti meg, amikor a módosítások felkerülnek a `main` ágra.
+A projekt SemVer formátumú verziót használ (`MAJOR.MINOR.PATCH`). A megjelenített verziót az `index.html` `app-version` meta mezőjében kell frissíteni, a változásokat pedig a `docs/CHANGELOG.md` fájlban kell rögzíteni. A GitHub Pages az új verziót akkor jeleníti meg, amikor a módosítások felkerülnek a `main` ágra.

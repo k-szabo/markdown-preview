@@ -7,10 +7,26 @@
       name="description"
       content="Egyszerű, valós idejű Markdown előnézet."
     />
-    <meta name="app-version" content="1.1.1" />
+    <meta name="app-version" content="1.2.0" />
     <title>Markdown Preview</title>
-    <link rel="stylesheet" href="./styles.css" />
-    <script defer src="./app.js"></script>
+    <script>
+      (() => {
+        let theme;
+        try {
+          theme = localStorage.getItem("markdown-preview-theme");
+        } catch (error) {
+          console.warn("A mentett témabeállítás nem olvasható.", error);
+        }
+        document.documentElement.dataset.theme =
+          theme === "light" || theme === "dark"
+            ? theme
+            : matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+      })();
+    </script>
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+    <script defer src="./assets/js/app.js"></script>
   </head>
   <body>
     <main class="app">
@@ -21,6 +37,16 @@
           <span id="app-version" class="version-label"></span>
         </a>
         <p>Írd vagy illeszd be a Markdown szöveget, és nézd meg az előnézetet.</p>
+        <button
+          id="theme-toggle"
+          class="theme-toggle"
+          type="button"
+          aria-pressed="false"
+          aria-label="Sötét mód bekapcsolása"
+        >
+          <span class="theme-icon" aria-hidden="true">☾</span>
+          <span class="theme-label">Sötét mód</span>
+        </button>
       </header>
 
       <section class="workspace" aria-label="Markdown szerkesztő és előnézet">
