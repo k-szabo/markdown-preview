@@ -81,7 +81,7 @@ async function renderMarkdown() {
       return;
     }
 
-    const tokens = marked.lexer(markdown);
+    const tokens = new marked.Marked().lexer(markdown);
     const codeTokens = renderMarkdownUtils.collectCodeTokens(tokens);
     const specialLanguages = new Set([
       "mermaid",
