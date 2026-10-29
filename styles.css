@@ -60,10 +60,26 @@ body {
   letter-spacing: -1px;
 }
 
+.version-label {
+  padding: 3px 7px;
+  border: 1px solid #e1e3e8;
+  border-radius: 999px;
+  color: #737782;
+  font-size: 10px;
+  font-weight: 600;
+}
+
 .app-header p {
   margin: 0;
   color: #737782;
   font-size: 13px;
+  text-align: right;
+}
+
+.app-footer {
+  padding-top: 12px;
+  color: #858994;
+  font-size: 11px;
   text-align: right;
 }
 
