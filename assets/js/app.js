@@ -72,15 +72,12 @@ workspaceDivider?.addEventListener("pointermove", (event) => {
 });
 
 workspaceDivider?.addEventListener("keydown", (event) => {
-  const isVertical = !narrowLayout.matches;
-  const decrementKey = isVertical ? "ArrowLeft" : "ArrowUp";
-  const incrementKey = isVertical ? "ArrowRight" : "ArrowDown";
   const currentSize = Number(workspaceDivider.getAttribute("aria-valuenow"));
 
-  if (event.key === decrementKey) {
+  if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
     event.preventDefault();
     setEditorSize(currentSize - 5);
-  } else if (event.key === incrementKey) {
+  } else if (event.key === "ArrowRight" || event.key === "ArrowDown") {
     event.preventDefault();
     setEditorSize(currentSize + 5);
   } else if (event.key === "Home") {

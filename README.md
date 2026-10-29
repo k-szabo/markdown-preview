@@ -8,7 +8,7 @@ Első használatkor az alkalmazás a számítógéped színsémáját követi. A
 
 ## Munkaterület
 
-A **Nézet** gombokkal megjelenítheted mindkét panelt, vagy csak a szerkesztőt, illetve csak az előnézetet. Kétpaneles nézetben húzd az elválasztót a panelek átméretezéséhez; billentyűzettel az elválasztóra fókuszálva a nyílbillentyűkkel is módosíthatod az arányt.
+A **Nézet** gombokkal megjelenítheted mindkét panelt, vagy csak a szerkesztőt, illetve csak az előnézetet. Kétpaneles nézetben húzd az elválasztót a panelek átméretezéséhez; billentyűzettel az elválasztóra fókuszálva bármelyik nyílbillentyűvel módosíthatod az arányt: balra/felfelé csökkentheted, jobbra/lefelé növelheted a szerkesztő méretét.
 
 ## Támogatott Markdown-elemek
 
