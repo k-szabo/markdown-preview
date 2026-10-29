@@ -171,6 +171,8 @@ function ensureMermaid() {
     mermaid.initialize({
       startOnLoad: false,
       securityLevel: "strict",
+      htmlLabels: false,
+      flowchart: { htmlLabels: false },
     });
   });
 }

@@ -2,7 +2,7 @@
 
 Egyszerű, valós idejű Markdown előnézet két panellel, fejlett Markdown-kiegészítések támogatásával. Nincs szükség buildre vagy telepítésre; a projekt GitHub Pages-en statikus weboldalként publikálható.
 
-Aktuális verzió: **1.1.0**. A verzió az oldal fejlécében is látható; a kiadások változásait a [CHANGELOG.md](./CHANGELOG.md) követi.
+Aktuális verzió: **1.1.1**. A verzió az oldal fejlécében is látható; a kiadások változásait a [CHANGELOG.md](./CHANGELOG.md) követi.
 
 ## Futtatás
 
