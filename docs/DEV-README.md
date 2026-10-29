@@ -4,7 +4,10 @@
 
 - `index.html` – GitHub Pages belépési pontja
 - `assets/css/styles.css` – alkalmazásstílusok és témák
-- `assets/js/app.js` – Markdown-feldolgozás és kiegészítők
+- `assets/js/dependencies.js` – külső könyvtárak betöltése és témastílusok
+- `assets/js/markdown.js` – Markdown-kiegészítők és kódblokkok feldolgozása
+- `assets/js/renderer.js` – az előnézet és diagramok renderelése
+- `assets/js/app.js` – felhasználói események és az alkalmazás indítása
 - `docs/CHANGELOG.md` – kiadások változásnaplója
 
 ## Helyi fejlesztés
@@ -31,7 +34,7 @@ Az `index.html` a gyökérkönyvtárban marad, az eszközök és stílusok relat
 
 A Marked és a DOMPurify induláskor töltődik be. A Mermaid, KaTeX, a lábjegyzet-kiegészítő, a szintaxiskiemelő, a Chart.js és a Graphviz csak használatkor töltődik le.
 
-A CDN-címek rögzített verziót használnak, és a JavaScript-/CSS-erőforrásokat Subresource Integrity (SRI) védi. Függőségverzió frissítésekor ellenőrizd a hozzá tartozó `integrity` hash-t az `assets/js/app.js` fájlban is.
+A CDN-címek rögzített verziót használnak, és a JavaScript-/CSS-erőforrásokat Subresource Integrity (SRI) védi. Függőségverzió frissítésekor ellenőrizd a hozzá tartozó `integrity` hash-t az `assets/js/dependencies.js` fájlban is.
 
 ## Verziózás
 
