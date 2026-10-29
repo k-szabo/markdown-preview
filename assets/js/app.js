@@ -674,5 +674,32 @@ themeToggle?.addEventListener("click", () => {
   void renderMarkdown();
 });
 
+input?.addEventListener("keydown", (event) => {
+  if (event.key !== "Tab" || event.shiftKey) {
+    return;
+  }
+
+  event.preventDefault();
+
+  const { selectionStart, selectionEnd, value } = input;
+  if (selectionStart === selectionEnd) {
+    input.setRangeText("  ", selectionStart, selectionEnd, "end");
+  } else {
+    const lineStart = value.lastIndexOf("\n", selectionStart - 1) + 1;
+    const selectedText = value.slice(lineStart, selectionEnd);
+    const lines = selectedText.split("\n");
+    const hasTrailingLineBreak = selectedText.endsWith("\n");
+    const linesToIndent = hasTrailingLineBreak ? lines.slice(0, -1) : lines;
+    const indentedText = `${linesToIndent
+      .map((line) => `  ${line}`)
+      .join("\n")}${hasTrailingLineBreak ? "\n" : ""}`;
+    const addedIndent = linesToIndent.length * 2;
+
+    input.setRangeText(indentedText, lineStart, selectionEnd, "preserve");
+    input.setSelectionRange(selectionStart + 2, selectionEnd + addedIndent);
+  }
+
+  input.dispatchEvent(new Event("input", { bubbles: true }));
+});
 input?.addEventListener("input", renderMarkdown);
 void renderMarkdown();
