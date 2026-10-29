@@ -1,42 +1,49 @@
 # Markdown Preview
 
-Egyszerű, valós idejű Markdown előnézet két panellel, fejlett Markdown-kiegészítések támogatásával. Nincs szükség buildre vagy telepítésre; a projekt GitHub Pages-en statikus weboldalként publikálható.
+Írj vagy illessz be Markdown-szöveget a bal oldali szerkesztőbe, és a jobb oldalon azonnal látod a formázott előnézetet.
 
-Aktuális verzió: **1.2.0**. A verzió az oldal fejlécében is látható; a kiadások változásait a [CHANGELOG.md](./docs/CHANGELOG.md) követi.
+## Megjelenés
 
-Az alkalmazás automatikusan a rendszer színsémáját használja első látogatáskor. A fejlécben található gombbal válthatsz világos és sötét mód között; a választást elmenti a böngésző.
+Első használatkor az alkalmazás a számítógéped színsémáját követi. A fejlécben található **Sötét mód / Világos mód** gombbal válthatsz témát. A választásod a böngészőben elmentődik.
 
-## Futtatás
+## Támogatott Markdown-elemek
 
-Nyisd meg az `index.html` fájlt böngészőben. A Marked és a DOMPurify induláskor töltődik be; a Mermaid, KaTeX, a lábjegyzet-kiegészítő, a szintaxiskiemelő, a Chart.js és a Graphviz csak akkor, ha a beírt Markdown használja. Az alkalmazás első betöltéséhez és a kiegészítők letöltéséhez internetkapcsolat szükséges.
+- Címsorok, bekezdések, felsorolások és számozott listák
+- Félkövér, dőlt, áthúzott szöveg, idézetek, linkek és képek
+- Táblázatok és feladatlisták
+- Matematikai képletek: `$x^2$` soron belül, vagy `$$x^2$$` külön sorban
+- Lábjegyzetek és definíciós listák
+- Kiemelt kódblokkok, például `js`, `python` vagy `json` jelöléssel
+- Mermaid diagramok `mermaid` kódblokkokban
+- Graphviz diagramok `dot` vagy `graphviz` kódblokkokban
+- Vonal-, oszlop-, kör-, doughnut-, radar- és polar area grafikonok `chart` JSON kódblokkokban
 
-A CDN-címek verziói rögzítettek, a JavaScript- és CSS-fájlokat pedig Subresource Integrity (SRI) ellenőrzés védi. Ha egy rögzített fájl tartalma megváltozik, a böngésző nem tölti be; ilyenkor az elvárt verzióhoz tartozó SRI-hash-t kell frissíteni.
+## Mermaid-diagram
 
-A Markdown tartalom feldolgozása és a diagramok renderelése a böngészőben történik. A Markdownba írt külső képek és hivatkozások megnyitásakor a böngésző kapcsolatot kezdeményezhet a megadott külső címek felé.
-
-## Támogatott elemek
-
-- GitHub Flavored Markdown: táblázatok, áthúzás, automatikus linkek és feladatlisták
-- Mermaid diagramok a `mermaid` kódblokkokban
-- Graphviz DOT diagramok a `dot` vagy `graphviz` kódblokkokban
-- Matematikai képletek KaTeX-szel: `$...$` soron belül, `$$...$$` külön sorban
-- Lábjegyzetek a `[^jelölés]` és `[^jelölés]: magyarázat` formával
-- Definíciós listák a kifejezés utáni `: meghatározás` sorral
-- Szintaxiskiemelés a nyelvvel megjelölt kódblokkokban
-- Vonal-, oszlop-, kör-, doughnut-, radar- és polar area grafikonok `chart` JSON blokkokban
-
-Példák:
+Írd a diagramot egy `mermaid` nyelvű kódblokkba:
 
 ````markdown
-Szorozzuk össze: $a^2 + b^2 = c^2$.
+```mermaid
+flowchart LR
+    A[Markdown] --> B[Előnézet]
+```
+````
 
-Itt egy lábjegyzet[^megjegyzes].
+## Matematikai képlet és lábjegyzet
+
+````markdown
+Euler azonossága: $e^{i\pi} + 1 = 0$.
+
+Ez egy lábjegyzetre hivatkozik[^megjegyzes].
 
 [^megjegyzes]: A lábjegyzet szövege.
+````
 
-Markdown
-: Könnyű szövegleíró formátum.
+## Grafikon
 
+A `chart` kódblokkban add meg a grafikon típusát, címkéit és adatsorait:
+
+````markdown
 ```chart
 {
   "type": "bar",
@@ -46,7 +53,11 @@ Markdown
   ]
 }
 ```
+````
 
+## Graphviz-diagram
+
+````markdown
 ```dot
 digraph G {
   Markdown -> Előnézet
@@ -54,23 +65,4 @@ digraph G {
 ```
 ````
 
-Mermaid diagramot a `mermaid` nyelvű kódblokkal adhatsz hozzá:
-
-````markdown
-```mermaid
-flowchart LR
-    A[Markdown] --> B[Előnézet]
-```
-````
-
-## GitHub Pages
-
-1. Töltsd fel a fájlokat egy GitHub-repozitóriumba.
-2. A repozitórium **Settings → Pages** oldalán válaszd ki a publikálási forrást.
-3. Állítsd be a `main` ágat és a gyökérkönyvtárat (`/`), majd mentsd el.
-
-Az `index.html` belépési pont a gyökérkönyvtárban marad. Az alkalmazáskód az `assets/` alatt, a változásnapló pedig a `docs/` mappában található; további build- vagy deploy-konfiguráció nem szükséges.
-
-## Verziózás
-
-A projekt SemVer formátumú verziót használ (`MAJOR.MINOR.PATCH`). A megjelenített verziót az `index.html` `app-version` meta mezőjében kell frissíteni, a változásokat pedig a `docs/CHANGELOG.md` fájlban kell rögzíteni. A GitHub Pages az új verziót akkor jeleníti meg, amikor a módosítások felkerülnek a `main` ágra.
+További technikai és közreműködői információkért lásd a [fejlesztői útmutatót](./DEV-README.md).
