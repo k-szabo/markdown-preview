@@ -1,5 +1,9 @@
 # Változások
 
+## 1.2.1 - 2026-10-29
+
+- JavaScript-modulok verziózott URL-t kapnak, így a gyorsítótár nem keverheti az új modulokat egy régi `app.js` fájllal.
+
 ## 1.2.0 - 2026-10-29
 
 - Választható világos és sötét megjelenés, a rendszer témájának automatikus követésével.
