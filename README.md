@@ -65,4 +65,4 @@ digraph G {
 ```
 ````
 
-További technikai és közreműködői információkért lásd a [fejlesztői útmutatót](./DEV-README.md).
+További technikai és közreműködői információkért lásd a [fejlesztői útmutatót](./docs/DEV-README.md).
