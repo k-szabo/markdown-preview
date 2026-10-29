@@ -6,6 +6,10 @@
 
 Első használatkor az alkalmazás a számítógéped színsémáját követi. A fejlécben található **Sötét mód / Világos mód** gombbal válthatsz témát. A választásod a böngészőben elmentődik.
 
+## Munkaterület
+
+A **Nézet** gombokkal megjelenítheted mindkét panelt, vagy csak a szerkesztőt, illetve csak az előnézetet. Kétpaneles nézetben húzd az elválasztót a panelek átméretezéséhez; billentyűzettel az elválasztóra fókuszálva a nyílbillentyűkkel is módosíthatod az arányt.
+
 ## Támogatott Markdown-elemek
 
 - Címsorok, bekezdések, felsorolások és számozott listák

@@ -1,12 +1,100 @@
 const input = document.querySelector("#markdown-input");
 const themeToggle = document.querySelector("#theme-toggle");
 const markdownRenderer = window.markdownPreviewRenderer;
+const workspace = document.querySelector(".workspace");
+const workspaceDivider = document.querySelector(".workspace-divider");
+const viewButtons = document.querySelectorAll(".view-controls [data-view]");
+const narrowLayout = window.matchMedia("(max-width: 700px)");
 
 const appVersion = document.querySelector('meta[name="app-version"]')?.content;
 const versionLabel = document.querySelector("#app-version");
 if (versionLabel && appVersion) {
   versionLabel.textContent = `v${appVersion}`;
 }
+
+viewButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const view = button.dataset.view;
+    if (!workspace || !view) {
+      return;
+    }
+
+    workspace.dataset.view = view;
+    viewButtons.forEach((viewButton) => {
+      viewButton.setAttribute(
+        "aria-pressed",
+        String(viewButton.dataset.view === view),
+      );
+    });
+  });
+});
+
+function updateDividerOrientation() {
+  workspaceDivider?.setAttribute(
+    "aria-orientation",
+    narrowLayout.matches ? "horizontal" : "vertical",
+  );
+}
+
+function setEditorSize(size) {
+  if (!workspace || !workspaceDivider) {
+    return;
+  }
+
+  const clampedSize = Math.min(80, Math.max(20, size));
+  workspace.style.setProperty("--editor-size", `${clampedSize}%`);
+  workspaceDivider.setAttribute("aria-valuenow", String(clampedSize));
+}
+
+workspaceDivider?.addEventListener("pointerdown", (event) => {
+  if (!workspace || workspace.dataset.view !== "split") {
+    return;
+  }
+
+  event.preventDefault();
+  workspaceDivider.setPointerCapture(event.pointerId);
+});
+
+workspaceDivider?.addEventListener("pointermove", (event) => {
+  if (
+    !workspace ||
+    workspace.dataset.view !== "split" ||
+    !workspaceDivider.hasPointerCapture(event.pointerId)
+  ) {
+    return;
+  }
+
+  const bounds = workspace.getBoundingClientRect();
+  const position = narrowLayout.matches
+    ? ((event.clientY - bounds.top) / bounds.height) * 100
+    : ((event.clientX - bounds.left) / bounds.width) * 100;
+  setEditorSize(position);
+});
+
+workspaceDivider?.addEventListener("keydown", (event) => {
+  const isVertical = !narrowLayout.matches;
+  const decrementKey = isVertical ? "ArrowLeft" : "ArrowUp";
+  const incrementKey = isVertical ? "ArrowRight" : "ArrowDown";
+  const currentSize = Number(workspaceDivider.getAttribute("aria-valuenow"));
+
+  if (event.key === decrementKey) {
+    event.preventDefault();
+    setEditorSize(currentSize - 5);
+  } else if (event.key === incrementKey) {
+    event.preventDefault();
+    setEditorSize(currentSize + 5);
+  } else if (event.key === "Home") {
+    event.preventDefault();
+    setEditorSize(20);
+  } else if (event.key === "End") {
+    event.preventDefault();
+    setEditorSize(80);
+  }
+});
+
+workspaceDivider?.addEventListener("dblclick", () => setEditorSize(50));
+narrowLayout.addEventListener("change", updateDividerOrientation);
+updateDividerOrientation();
 
 markdownRenderer.setTheme(document.documentElement.dataset.theme || "light");
 themeToggle?.addEventListener("click", () => {

@@ -7,7 +7,7 @@
       name="description"
       content="Egyszerű, valós idejű Markdown előnézet."
     />
-    <meta name="app-version" content="1.2.2" />
+    <meta name="app-version" content="1.2.3" />
     <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg" />
     <title>Markdown Preview</title>
     <script>
@@ -26,11 +26,11 @@
               : "light";
       })();
     </script>
-    <link rel="stylesheet" href="./assets/css/styles.css" />
-    <script defer src="./assets/js/dependencies.js?v=1.2.2"></script>
-    <script defer src="./assets/js/markdown.js?v=1.2.2"></script>
-    <script defer src="./assets/js/renderer.js?v=1.2.2"></script>
-    <script defer src="./assets/js/app.js?v=1.2.2"></script>
+    <link rel="stylesheet" href="./assets/css/styles.css?v=1.2.3" />
+    <script defer src="./assets/js/dependencies.js?v=1.2.3"></script>
+    <script defer src="./assets/js/markdown.js?v=1.2.3"></script>
+    <script defer src="./assets/js/renderer.js?v=1.2.3"></script>
+    <script defer src="./assets/js/app.js?v=1.2.3"></script>
   </head>
   <body>
     <main class="app">
@@ -53,7 +53,26 @@
         </button>
       </header>
 
-      <section class="workspace" aria-label="Markdown szerkesztő és előnézet">
+      <div class="workspace-toolbar">
+        <span class="view-label">Nézet</span>
+        <div class="view-controls" role="group" aria-label="Megjelenített panelek">
+          <button type="button" data-view="editor" aria-pressed="false">
+            Csak szerkesztő
+          </button>
+          <button type="button" data-view="split" aria-pressed="true">
+            Mindkettő
+          </button>
+          <button type="button" data-view="preview" aria-pressed="false">
+            Csak előnézet
+          </button>
+        </div>
+      </div>
+
+      <section
+        class="workspace"
+        data-view="split"
+        aria-label="Markdown szerkesztő és előnézet"
+      >
         <section class="panel editor-panel" aria-labelledby="editor-heading">
           <div class="panel-header">
             <h1 id="editor-heading">Markdown</h1>
@@ -84,6 +103,17 @@ console.log('Helló, világ!');
 ```"
           ></textarea>
         </section>
+
+        <div
+          class="workspace-divider"
+          role="separator"
+          aria-label="Panelek méretének módosítása"
+          aria-orientation="vertical"
+          aria-valuemin="20"
+          aria-valuemax="80"
+          aria-valuenow="50"
+          tabindex="0"
+        ></div>
 
         <section class="panel preview-panel" aria-labelledby="preview-heading">
           <div class="panel-header">

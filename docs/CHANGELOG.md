@@ -1,5 +1,10 @@
 # Változások
 
+## 1.2.3 - 2026-10-29
+
+- Választható szerkesztő-, előnézet- és kétpaneles nézet.
+- Húzható, billentyűzettel is állítható elválasztó a panelek átméretezéséhez.
+
 ## 1.2.2 - 2026-10-29
 
 - A Mermaid-diagramok speciális karakterei (`&`, `<`, `>`) helyesen jelennek meg.
