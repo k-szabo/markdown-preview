@@ -1,5 +1,9 @@
 # Változások
 
+## 1.2.2 - 2026-10-29
+
+- A Mermaid-diagramok speciális karakterei (`&`, `<`, `>`) helyesen jelennek meg.
+
 ## 1.2.1 - 2026-10-29
 
 - JavaScript-modulok verziózott URL-t kapnak, így a gyorsítótár nem keverheti az új modulokat egy régi `app.js` fájllal.

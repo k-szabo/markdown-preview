@@ -6,6 +6,12 @@ const renderMarkdownUtils = window.markdownPreviewMarkdown;
 let markdownRenderVersion = 0;
 let activeCharts = [];
 
+function normalizeMermaidSvgText(svg) {
+  return svg.replace(/>([^<]*)</g, (match, text) =>
+    `>${text.replace(/&amp;(amp|lt|gt);/g, "&$1;")}<`,
+  );
+}
+
 function showError(error) {
   if (!markdownPreviewElement) {
     throw error;
@@ -145,7 +151,7 @@ async function renderMarkdown() {
           ) {
             return;
           }
-          diagram.innerHTML = DOMPurify.sanitize(svg, {
+          diagram.innerHTML = DOMPurify.sanitize(normalizeMermaidSvgText(svg), {
             USE_PROFILES: { svg: true, svgFilters: true },
           });
         } catch (error) {
