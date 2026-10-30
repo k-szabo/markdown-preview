@@ -21,6 +21,7 @@ function enableDiagramNavigation(diagram) {
   );
   diagram.setAttribute("role", "group");
   diagram.title = "Görgővel nagyítható, húzással mozgatható";
+  addFullscreenButton(diagram, "diagram");
 
   let canvas;
   let scale = 1;
@@ -136,7 +137,8 @@ function enableDiagramNavigation(diagram) {
     if (
       !canvas ||
       event.button !== 0 ||
-      (event.target instanceof Element && event.target.closest("a"))
+      (event.target instanceof Element &&
+        event.target.closest("a, .fullscreen-toggle"))
     ) {
       return;
     }
@@ -184,11 +186,78 @@ function disposeActiveDiagrams() {
   activeDiagramObservers = [];
 }
 
+function updateFullscreenButtons() {
+  markdownPreviewElement
+    ?.querySelectorAll(".fullscreen-toggle")
+    .forEach((button) => setFullscreenButtonState(button));
+}
+
+function setFullscreenButtonState(button) {
+  const container = button.parentElement;
+  const isFullscreen = document.fullscreenElement === container;
+  const description =
+    container?.classList.contains("chart-container") ? "grafikon" : "diagram";
+  const label = button.disabled
+    ? "A böngésző nem támogatja a teljes képernyős megjelenítést."
+    : isFullscreen
+      ? "Kilépés a teljes képernyőből"
+      : `${description[0].toUpperCase()}${description.slice(1)} megjelenítése teljes képernyőn`;
+  button.setAttribute("aria-label", label);
+  button.title = label;
+
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("width", "20");
+  svg.setAttribute("height", "20");
+  svg.setAttribute("fill", "none");
+  svg.setAttribute("stroke", "currentColor");
+  svg.setAttribute("stroke-width", "1.8");
+  svg.setAttribute("stroke-linecap", "round");
+  svg.setAttribute("stroke-linejoin", "round");
+  svg.setAttribute("aria-hidden", "true");
+
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute(
+    "d",
+    isFullscreen
+      ? "M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3M3 16h3a2 2 0 0 1 2 2v3m8 0v-3a2 2 0 0 1 2-2h3"
+      : "M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m8 0h3a2 2 0 0 0 2-2v-3",
+  );
+  svg.append(path);
+  button.replaceChildren(svg);
+}
+
+function addFullscreenButton(container, type) {
+  const button = document.createElement("button");
+  button.className = "fullscreen-toggle";
+  button.type = "button";
+  if (container.requestFullscreen && document.exitFullscreen) {
+    button.addEventListener("click", async () => {
+      try {
+        if (document.fullscreenElement === container) {
+          await document.exitFullscreen();
+        } else {
+          await container.requestFullscreen();
+        }
+      } catch (error) {
+        console.warn(`A ${type} nem jeleníthető meg teljes képernyőn.`, error);
+      }
+    });
+  } else {
+    button.disabled = true;
+    button.title = "A böngésző nem támogatja a teljes képernyős megjelenítést.";
+  }
+  container.append(button);
+  setFullscreenButtonState(button);
+}
+
 function normalizeMermaidSvgText(svg) {
   return svg.replace(/>([^<]*)</g, (match, text) =>
     `>${text.replace(/&amp;(amp|lt|gt);/g, "&$1;")}<`,
   );
 }
+
+document.addEventListener("fullscreenchange", updateFullscreenButtons);
 
 function showError(error) {
   if (!markdownPreviewElement) {
@@ -399,6 +468,7 @@ async function renderMarkdown() {
                 },
               }),
             );
+            addFullscreenButton(container, "grafikon");
           }
         } catch (error) {
           renderErrorHandling.showLibraryError(

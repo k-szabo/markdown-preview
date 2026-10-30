@@ -477,6 +477,54 @@ body {
   max-width: 100%;
 }
 
+.markdown-body .fullscreen-toggle {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  z-index: 1;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 7px;
+  color: var(--body-text-color);
+  background: var(--surface-bg);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 15%);
+  cursor: pointer;
+}
+
+.markdown-body .fullscreen-toggle:hover {
+  color: var(--text-color);
+  background: var(--soft-bg);
+}
+
+.markdown-body .fullscreen-toggle:focus-visible {
+  outline: 2px solid var(--brand-color);
+  outline-offset: 2px;
+}
+
+.markdown-body .diagram-viewport:fullscreen,
+.markdown-body .chart-container:fullscreen {
+  width: 100vw;
+  max-width: none;
+  height: 100vh;
+  max-height: none;
+  padding: 48px;
+  background: rgb(0 0 0 / 92%);
+}
+
+.markdown-body .diagram-viewport:fullscreen {
+  display: grid;
+  place-items: center;
+}
+
+.markdown-body .chart-container:fullscreen canvas {
+  max-width: 100%;
+  max-height: 100%;
+}
+
 .markdown-body .mermaid,
 .markdown-body .graphviz {
   margin: 0 0 1em;

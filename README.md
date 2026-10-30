@@ -14,6 +14,8 @@ A **Nézet** gombokkal megjelenítheted mindkét panelt, vagy csak a szerkesztő
 
 Az előnézetben a Mermaid- és Graphviz-diagramokat az egérgörgővel nagyíthatod vagy kicsinyítheted, majd bal egérgombbal húzva mozgathatod.
 
+Az előnézetben a Mermaid- és Graphviz-diagramokat, valamint a grafikonokat a jobb felső sarkukban lévő gombbal teljes képernyőre válthatod; ugyanazzal a gombbal vagy az `Esc` billentyűvel léphetsz ki.
+
 ## Támogatott Markdown-elemek
 
 - Címsorok, bekezdések, felsorolások és számozott listák

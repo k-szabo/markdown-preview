@@ -1,5 +1,9 @@
 # Változások
 
+## 1.3.5 - 2026-10-30
+
+- A Mermaid- és Graphviz-diagramok, valamint a grafikonok teljes képernyőn is megnyithatók.
+
 ## 1.3.4 - 2026-10-30
 
 - A fejléc verziószövege a terméknév szövegének alapvonalához igazodik.
