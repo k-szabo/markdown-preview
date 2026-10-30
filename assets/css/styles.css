@@ -107,6 +107,7 @@ body {
 .version-label {
   display: inline-flex;
   align-items: center;
+  transform: translateY(3px);
   padding: 2px 7px;
   border: 1px solid var(--border-color);
   border-radius: 999px;

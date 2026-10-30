@@ -1,5 +1,9 @@
 # Változások
 
+## 1.3.4 - 2026-10-30
+
+- A fejléc verziószövege a terméknév szövegének alapvonalához igazodik.
+
 ## 1.3.3 - 2026-10-30
 
 - A fejléc verziójelzése függőlegesen igazodik a címhez, és kattintásra megnyitja a változásnaplót.
