@@ -512,7 +512,7 @@ body {
   height: 100vh;
   max-height: none;
   padding: 48px;
-  background: rgb(0 0 0 / 92%);
+  background: var(--page-bg);
 }
 
 .markdown-body .diagram-viewport:fullscreen {
@@ -539,6 +539,12 @@ body {
   overscroll-behavior: contain;
   scrollbar-width: none;
   -ms-overflow-style: none;
+}
+
+.markdown-body .diagram-viewport,
+.markdown-body .diagram-viewport * {
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .markdown-body .diagram-viewport::-webkit-scrollbar {
