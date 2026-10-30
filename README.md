@@ -2,6 +2,8 @@
 
 Írj vagy illessz be Markdown-szöveget a bal oldali szerkesztőbe, és a jobb oldalon azonnal látod a formázott előnézetet.
 
+[Élő oldal megnyitása a GitHub Pagesen](https://k-szabo.github.io/markdown-preview/)
+
 ## Megjelenés
 
 Első használatkor az alkalmazás a számítógéped színsémáját követi. A fejlécben található **Sötét mód / Világos mód** gombbal válthatsz témát. A választásod a böngészőben elmentődik.

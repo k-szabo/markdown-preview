@@ -151,6 +151,17 @@ body {
   text-align: right;
 }
 
+.app-footer a {
+  margin-left: 8px;
+  color: inherit;
+  text-underline-offset: 2px;
+}
+
+.app-footer a:focus-visible {
+  outline: 2px solid var(--brand-color);
+  outline-offset: 2px;
+}
+
 .workspace-toolbar {
   display: flex;
   align-items: center;
