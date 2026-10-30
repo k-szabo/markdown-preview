@@ -145,11 +145,25 @@ body {
   cursor: pointer;
 }
 
-.theme-toggle:hover {
+.share-button {
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--body-text-color);
+  background: var(--surface-bg);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.theme-toggle:hover,
+.share-button:hover {
   background: var(--soft-bg);
 }
 
-.theme-toggle:focus-visible {
+.theme-toggle:focus-visible,
+.share-button:focus-visible {
   outline: 2px solid var(--brand-color);
   outline-offset: 2px;
 }
@@ -186,10 +200,28 @@ body {
 
 .workspace-toolbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
   gap: 12px;
   padding-bottom: 10px;
+}
+
+.share-controls {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+  margin-right: auto;
+}
+
+.share-status {
+  color: var(--muted-color);
+  font-size: 11px;
+}
+
+.share-status[data-error="true"] {
+  color: var(--error-text);
 }
 
 .view-label {
@@ -734,8 +766,12 @@ body {
   }
 
   .workspace-toolbar {
-    justify-content: center;
+    justify-content: space-between;
     gap: 8px;
+  }
+
+  .share-status {
+    overflow-wrap: anywhere;
   }
 
   .view-controls button {

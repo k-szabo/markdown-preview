@@ -1,5 +1,13 @@
 # Változások
 
+## 1.3.9 - 2026-10-30
+
+- A megosztási visszajelzés a „Link másolása” gomb mellé került.
+
+## 1.3.8 - 2026-10-30
+
+- A Markdown-tartalom megosztási linken keresztül elküldhető és a szerkesztőbe visszatölthető.
+
 ## 1.3.7 - 2026-10-30
 
 - A diagramok beragadó böngésző-tooltipje megszűnt; a navigációs útmutatás akadálymentes címkeként továbbra is elérhető.
