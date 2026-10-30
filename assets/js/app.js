@@ -14,8 +14,7 @@ if (versionLabel && appVersion) {
   versionLabel.textContent = `v${appVersion}`;
 }
 
-function encodeMarkdown(markdown) {
-  const bytes = new TextEncoder().encode(markdown);
+function encodeBase64Url(bytes) {
   let binary = "";
   for (let offset = 0; offset < bytes.length; offset += 0x8000) {
     binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
@@ -23,15 +22,50 @@ function encodeMarkdown(markdown) {
   return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
-function decodeMarkdown(hash) {
-  const encoded = hash.slice("#markdown=".length);
+function decodeBase64Url(encoded) {
   if (encoded.length % 4 === 1 || !/^[A-Za-z0-9_-]*$/.test(encoded)) {
     throw new Error("A megosztási link Markdown-tartalma érvénytelen.");
   }
 
   const base64 = encoded.replace(/-/g, "+").replace(/_/g, "/");
   const binary = atob(base64.padEnd(Math.ceil(base64.length / 4) * 4, "="));
-  const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+  return Uint8Array.from(binary, (character) => character.charCodeAt(0));
+}
+
+async function transformBytes(bytes, Transformer) {
+  const stream = new Blob([bytes])
+    .stream()
+    .pipeThrough(new Transformer("deflate"));
+  return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+
+async function encodeMarkdown(markdown) {
+  const bytes = new TextEncoder().encode(markdown);
+  if (typeof CompressionStream === "function") {
+    const compressed = await transformBytes(bytes, CompressionStream);
+    const compressedPayload = `z.${encodeBase64Url(compressed)}`;
+    const plainPayload = encodeBase64Url(bytes);
+    return compressedPayload.length < plainPayload.length
+      ? compressedPayload
+      : plainPayload;
+  }
+  return encodeBase64Url(bytes);
+}
+
+async function decodeMarkdown(hash) {
+  const encoded = hash.slice("#markdown=".length);
+  const compressed = encoded.startsWith("z.");
+  let bytes = decodeBase64Url(compressed ? encoded.slice(2) : encoded);
+
+  if (compressed) {
+    if (typeof DecompressionStream !== "function") {
+      throw new Error(
+        "A böngésző nem támogatja a tömörített megosztási link megnyitását.",
+      );
+    }
+    bytes = await transformBytes(bytes, DecompressionStream);
+  }
+
   return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
 }
 
@@ -43,13 +77,13 @@ function showShareStatus(message, isError = false) {
   shareStatus.dataset.error = String(isError);
 }
 
-function loadSharedMarkdown() {
+async function loadSharedMarkdown() {
   if (!input || !window.location.hash.startsWith("#markdown=")) {
     return false;
   }
 
   try {
-    input.value = decodeMarkdown(window.location.hash);
+    input.value = await decodeMarkdown(window.location.hash);
     showShareStatus("", false);
     return true;
   } catch (error) {
@@ -58,9 +92,13 @@ function loadSharedMarkdown() {
   }
 }
 
-loadSharedMarkdown();
-window.addEventListener("hashchange", () => {
-  if (loadSharedMarkdown()) {
+void loadSharedMarkdown().then((loaded) => {
+  if (loaded) {
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+  }
+});
+window.addEventListener("hashchange", async () => {
+  if (await loadSharedMarkdown()) {
     input.dispatchEvent(new Event("input", { bubbles: true }));
   }
 });
@@ -97,7 +135,7 @@ shareLinkButton?.addEventListener("click", async () => {
 
   try {
     const url = new URL(window.location.href);
-    url.hash = `markdown=${encodeMarkdown(input.value)}`;
+    url.hash = `markdown=${await encodeMarkdown(input.value)}`;
     await copyText(url.href);
     showShareStatus("A megosztási link a vágólapra másolva.");
   } catch (error) {

@@ -1,5 +1,9 @@
 # Változások
 
+## 1.4.0 - 2026-10-30
+
+- A megosztási link tömörített Markdown-tartalmat használ a rövidebb URL-ekért; a korábbi linkformátum továbbra is megnyitható.
+
 ## 1.3.9 - 2026-10-30
 
 - A megosztási visszajelzés a „Link másolása” gomb mellé került.

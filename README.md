@@ -12,7 +12,7 @@ Első használatkor az alkalmazás a számítógéped színsémáját követi. A
 
 A **Nézet** gombokkal megjelenítheted mindkét panelt, vagy csak a szerkesztőt, illetve csak az előnézetet. Kétpaneles nézetben húzd az elválasztót a panelek átméretezéséhez; billentyűzettel az elválasztóra fókuszálva bármelyik nyílbillentyűvel módosíthatod az arányt: balra/felfelé csökkentheted, jobbra/lefelé növelheted a szerkesztő méretét.
 
-A **Link másolása** gombbal megoszthatod az aktuális Markdown-tartalmat. A link megnyitásakor a szöveg automatikusan betöltődik a szerkesztőbe. A tartalom a linkben szerepel, ezért a link birtokosa elolvashatja; érzékeny szöveget ne ossz meg így.
+A **Link másolása** gombbal megoszthatod az aktuális Markdown-tartalmat. Ha a tömörítés rövidebb linket eredményez, a szöveg tömörítve kerül bele; így a link gyakran jóval rövidebb. A megnyitásához modern böngésző szükséges. A link megnyitásakor a szöveg automatikusan betöltődik a szerkesztőbe. A tartalom a linkben szerepel, ezért a link birtokosa elolvashatja; érzékeny szöveget ne ossz meg így. A helyi böngészőtár nem használható másokkal történő megosztásra.
 
 Az előnézetben a Mermaid- és Graphviz-diagramok a rendelkezésre álló hely nagyobb részét használják; a hosszabb ábrákon egérgörgővel görgethetsz. Ctrl+egérgörgővel nagyíthatod vagy kicsinyítheted, majd bal egérgombbal húzva mozgathatod őket.
 
