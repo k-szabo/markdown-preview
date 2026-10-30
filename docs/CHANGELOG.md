@@ -1,5 +1,9 @@
 # Változások
 
+## 1.3.7 - 2026-10-30
+
+- A diagramok beragadó böngésző-tooltipje megszűnt; a navigációs útmutatás akadálymentes címkeként továbbra is elérhető.
+
 ## 1.3.6 - 2026-10-30
 
 - A Mermaid- és Graphviz-diagramok nagyobb nézetet kaptak, a görgetés pedig nem nagyítja véletlenül az ábrát.

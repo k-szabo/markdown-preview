@@ -20,7 +20,6 @@ function enableDiagramNavigation(diagram) {
     "Nagyítható diagram: Ctrl+görgővel nagyítható, húzással mozgatható.",
   );
   diagram.setAttribute("role", "group");
-  diagram.title = "Ctrl+görgővel nagyítható, húzással mozgatható";
   addFullscreenButton(diagram, "diagram");
 
   let canvas;
