@@ -1,5 +1,9 @@
 # Változások
 
+## 1.3.3 - 2026-10-30
+
+- A fejléc verziójelzése függőlegesen igazodik a címhez, és kattintásra megnyitja a változásnaplót.
+
 ## 1.3.2 - 2026-10-30
 
 - A könyvtárak renderelési hibái egységes, központi hibakezelőn keresztül jelennek meg.
