@@ -456,7 +456,12 @@ body {
   overflow: auto;
   cursor: grab;
   overscroll-behavior: contain;
-  scrollbar-gutter: stable;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.markdown-body .diagram-viewport::-webkit-scrollbar {
+  display: none;
 }
 
 .markdown-body .diagram-viewport.is-dragging {
