@@ -161,9 +161,10 @@ function renderCodeBlock({ text, lang }) {
         JSON.stringify(config),
       )}"><canvas role="img" aria-label="Markdown grafikon"></canvas></div>`;
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Érvénytelen grafikonadat.";
-      return `<pre class="render-error">${escapeHtml(message)}</pre>`;
+      return window.markdownPreviewErrorHandling.renderCodeBlockError(
+        error,
+        "A grafikon adatainak formátuma érvénytelen.",
+      );
     }
   }
 

@@ -1,5 +1,14 @@
 # Változások
 
+## 1.3.2 - 2026-10-30
+
+- A könyvtárak renderelési hibái egységes, központi hibakezelőn keresztül jelennek meg.
+
+## 1.3.1 - 2026-10-30
+
+- Hibás Mermaid-szintaxis esetén a Mermaid hibaábrája helyett tömör, magyar hibaüzenet jelenik meg.
+- A diagram nagyításakor és kicsinyítésekor a kurzor alatti pont a helyén marad.
+
 ## 1.3.0 - 2026-10-30
 
 - Mermaid- és Graphviz-diagramok nagyítása és kicsinyítése egérgörgővel, valamint mozgatása húzással.

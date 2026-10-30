@@ -5,6 +5,7 @@
 - `index.html` – GitHub Pages belépési pontja
 - `assets/css/styles.css` – alkalmazásstílusok és témák
 - `assets/js/dependencies.js` – külső könyvtárak betöltése és témastílusok
+- `assets/js/errorHandling.js` – közös könyvtár- és előnézeti hibamegjelenítés
 - `assets/js/markdown.js` – Markdown-kiegészítők és kódblokkok feldolgozása
 - `assets/js/renderer.js` – az előnézet, diagramok renderelése és az SVG-diagramok navigációja
 - `assets/js/app.js` – felhasználói események és az alkalmazás indítása

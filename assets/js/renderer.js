@@ -3,6 +3,7 @@ const markdownPreviewElement = document.querySelector("#markdown-preview");
 const markdownThemeToggle = document.querySelector("#theme-toggle");
 const renderDependencies = window.markdownPreviewDependencies;
 const renderMarkdownUtils = window.markdownPreviewMarkdown;
+const renderErrorHandling = window.markdownPreviewErrorHandling;
 let markdownRenderVersion = 0;
 let activeCharts = [];
 let activeDiagramObservers = [];
@@ -103,7 +104,6 @@ function enableDiagramNavigation(diagram) {
     }
 
     const viewportBounds = diagram.getBoundingClientRect();
-    const canvasBounds = canvas.getBoundingClientRect();
     const styles = getComputedStyle(diagram);
     const localX =
       event.clientX -
@@ -115,12 +115,21 @@ function enableDiagramNavigation(diagram) {
       viewportBounds.top -
       Number.parseFloat(styles.borderTopWidth) -
       Number.parseFloat(styles.paddingTop);
-    const diagramX = event.clientX - canvasBounds.left + diagram.scrollLeft;
-    const diagramY = event.clientY - canvasBounds.top + diagram.scrollTop;
+    const previousMargin = Math.max(
+      0,
+      (lastAvailableWidth - baseWidth * previousScale) / 2,
+    );
+    const diagramX =
+      (localX + diagram.scrollLeft - previousMargin) / previousScale;
+    const diagramY = (localY + diagram.scrollTop) / previousScale;
 
     updateCanvasSize(lastAvailableWidth);
-    diagram.scrollLeft = diagramX * (scale / previousScale) - localX;
-    diagram.scrollTop = diagramY * (scale / previousScale) - localY;
+    const nextMargin = Math.max(
+      0,
+      (lastAvailableWidth - baseWidth * scale) / 2,
+    );
+    diagram.scrollLeft = nextMargin + diagramX * scale - localX;
+    diagram.scrollTop = diagramY * scale - localY;
   }
 
   function onPointerDown(event) {
@@ -187,10 +196,7 @@ function showError(error) {
   }
 
   disposeActiveDiagrams();
-  markdownPreviewElement.textContent = `Az előnézet nem tölthető be: ${
-    error instanceof Error ? error.message : String(error)
-  }`;
-  markdownPreviewElement.classList.add("empty-state");
+  renderErrorHandling.showPreviewError(markdownPreviewElement, error);
 }
 
 function updateThemeButton(theme) {
@@ -313,15 +319,21 @@ async function renderMarkdown() {
     await Promise.all(
       [...diagrams].map(async (diagram, index) => {
         try {
+          const source = diagram.textContent;
+          await mermaid.parse(source);
           const { svg } = await mermaid.render(
             `mermaid-${currentVersion}-${index}`,
-            diagram.textContent,
+            source,
           );
           if (
             currentVersion !== markdownRenderVersion ||
             !diagram.isConnected
           ) {
             return;
+          }
+          const renderError = renderErrorHandling.getMermaidRenderError(svg);
+          if (renderError) {
+            throw renderError;
           }
           diagram.innerHTML = DOMPurify.sanitize(normalizeMermaidSvgText(svg), {
             USE_PROFILES: { svg: true, svgFilters: true },
@@ -334,10 +346,7 @@ async function renderMarkdown() {
           ) {
             return;
           }
-          diagram.classList.add("mermaid-error");
-          diagram.textContent = `A diagram nem jeleníthető meg: ${
-            error instanceof Error ? error.message : String(error)
-          }`;
+          renderErrorHandling.showMermaidError(diagram, error);
         }
       }),
     );
@@ -392,10 +401,11 @@ async function renderMarkdown() {
             );
           }
         } catch (error) {
-          container.classList.add("render-error");
-          container.textContent = `A grafikon nem jeleníthető meg: ${
-            error instanceof Error ? error.message : String(error)
-          }`;
+          renderErrorHandling.showLibraryError(
+            container,
+            error,
+            "A grafikon nem jeleníthető meg.",
+          );
         }
       });
 
@@ -412,10 +422,11 @@ async function renderMarkdown() {
           });
           enableDiagramNavigation(diagram);
         } catch (error) {
-          diagram.classList.add("render-error");
-          diagram.textContent = `A Graphviz diagram nem jeleníthető meg: ${
-            error instanceof Error ? error.message : String(error)
-          }`;
+          renderErrorHandling.showLibraryError(
+            diagram,
+            error,
+            "A Graphviz diagram nem jeleníthető meg.",
+          );
         }
       });
     }
