@@ -17,10 +17,10 @@ function enableDiagramNavigation(diagram) {
   diagram.classList.add("diagram-viewport");
   diagram.setAttribute(
     "aria-label",
-    "Nagyítható diagram: görgővel nagyítható, húzással mozgatható.",
+    "Nagyítható diagram: Ctrl+görgővel nagyítható, húzással mozgatható.",
   );
   diagram.setAttribute("role", "group");
-  diagram.title = "Görgővel nagyítható, húzással mozgatható";
+  diagram.title = "Ctrl+görgővel nagyítható, húzással mozgatható";
   addFullscreenButton(diagram, "diagram");
 
   let canvas;
@@ -90,7 +90,7 @@ function enableDiagramNavigation(diagram) {
   }
 
   function onWheel(event) {
-    if (!canvas || !baseWidth) {
+    if (!event.ctrlKey || !canvas || !baseWidth) {
       return;
     }
 

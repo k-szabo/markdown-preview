@@ -533,7 +533,7 @@ body {
 
 .markdown-body .diagram-viewport {
   position: relative;
-  max-height: min(70vh, 640px);
+  max-height: min(90vh, 900px);
   overflow: auto;
   cursor: grab;
   overscroll-behavior: contain;

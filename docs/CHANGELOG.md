@@ -1,5 +1,9 @@
 # Változások
 
+## 1.3.6 - 2026-10-30
+
+- A Mermaid- és Graphviz-diagramok nagyobb nézetet kaptak, a görgetés pedig nem nagyítja véletlenül az ábrát.
+
 ## 1.3.5 - 2026-10-30
 
 - A Mermaid- és Graphviz-diagramok, valamint a grafikonok teljes képernyőn is megnyithatók.
