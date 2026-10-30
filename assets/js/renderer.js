@@ -5,6 +5,175 @@ const renderDependencies = window.markdownPreviewDependencies;
 const renderMarkdownUtils = window.markdownPreviewMarkdown;
 let markdownRenderVersion = 0;
 let activeCharts = [];
+let activeDiagramObservers = [];
+
+function enableDiagramNavigation(diagram) {
+  const svg = diagram.querySelector("svg");
+  if (!svg) {
+    return;
+  }
+
+  diagram.classList.add("diagram-viewport");
+  diagram.setAttribute(
+    "aria-label",
+    "Nagyítható diagram: görgővel nagyítható, húzással mozgatható.",
+  );
+  diagram.setAttribute("role", "group");
+  diagram.title = "Görgővel nagyítható, húzással mozgatható";
+
+  let canvas;
+  let scale = 1;
+  let baseWidth = 0;
+  let baseHeight = 0;
+  let lastAvailableWidth = 0;
+  const viewBox = svg.viewBox.baseVal;
+  const aspectRatio =
+    viewBox.width > 0 && viewBox.height > 0
+      ? viewBox.width / viewBox.height
+      : undefined;
+  const naturalWidth =
+    viewBox.width > 0
+      ? viewBox.width
+      : Number.parseFloat(svg.getAttribute("width")) ||
+        svg.getBoundingClientRect().width;
+
+  function updateCanvasSize(availableWidth) {
+    if (!canvas || !aspectRatio) {
+      return;
+    }
+
+    baseWidth = Math.min(naturalWidth || availableWidth, availableWidth);
+    baseHeight = baseWidth / aspectRatio;
+    lastAvailableWidth = availableWidth;
+    canvas.style.width = `${baseWidth * scale}px`;
+    canvas.style.height = `${baseHeight * scale}px`;
+    svg.style.width = `${baseWidth}px`;
+    svg.style.height = `${baseHeight}px`;
+    svg.style.transform = `scale(${scale})`;
+  }
+
+  function updateDiagramSize() {
+    if (!diagram.isConnected) {
+      return;
+    }
+
+    const styles = getComputedStyle(diagram);
+    const availableWidth =
+      diagram.clientWidth -
+      Number.parseFloat(styles.paddingLeft) -
+      Number.parseFloat(styles.paddingRight);
+    if (availableWidth <= 0) {
+      return;
+    }
+
+    if (!canvas) {
+      if (!aspectRatio) {
+        return;
+      }
+
+      canvas = document.createElement("div");
+      canvas.className = "diagram-canvas";
+      svg.replaceWith(canvas);
+      canvas.append(svg);
+      svg.style.position = "absolute";
+      svg.style.left = "0";
+      svg.style.top = "0";
+      svg.style.maxWidth = "none";
+      svg.style.transformOrigin = "top left";
+    }
+
+    if (Math.abs(availableWidth - lastAvailableWidth) > 1) {
+      updateCanvasSize(availableWidth);
+    }
+  }
+
+  function onWheel(event) {
+    if (!canvas || !baseWidth) {
+      return;
+    }
+
+    event.preventDefault();
+    const previousScale = scale;
+    scale = Math.min(
+      4,
+      Math.max(0.25, previousScale * Math.exp(-event.deltaY * 0.002)),
+    );
+    if (scale === previousScale) {
+      return;
+    }
+
+    const viewportBounds = diagram.getBoundingClientRect();
+    const canvasBounds = canvas.getBoundingClientRect();
+    const styles = getComputedStyle(diagram);
+    const localX =
+      event.clientX -
+      viewportBounds.left -
+      Number.parseFloat(styles.borderLeftWidth) -
+      Number.parseFloat(styles.paddingLeft);
+    const localY =
+      event.clientY -
+      viewportBounds.top -
+      Number.parseFloat(styles.borderTopWidth) -
+      Number.parseFloat(styles.paddingTop);
+    const diagramX = event.clientX - canvasBounds.left + diagram.scrollLeft;
+    const diagramY = event.clientY - canvasBounds.top + diagram.scrollTop;
+
+    updateCanvasSize(lastAvailableWidth);
+    diagram.scrollLeft = diagramX * (scale / previousScale) - localX;
+    diagram.scrollTop = diagramY * (scale / previousScale) - localY;
+  }
+
+  function onPointerDown(event) {
+    if (
+      !canvas ||
+      event.button !== 0 ||
+      (event.target instanceof Element && event.target.closest("a"))
+    ) {
+      return;
+    }
+
+    if (
+      diagram.scrollWidth <= diagram.clientWidth &&
+      diagram.scrollHeight <= diagram.clientHeight
+    ) {
+      return;
+    }
+
+    const startX = event.clientX;
+    const startY = event.clientY;
+    const startScrollLeft = diagram.scrollLeft;
+    const startScrollTop = diagram.scrollTop;
+    diagram.classList.add("is-dragging");
+    diagram.setPointerCapture(event.pointerId);
+
+    const onPointerMove = (moveEvent) => {
+      diagram.scrollLeft = startScrollLeft - (moveEvent.clientX - startX);
+      diagram.scrollTop = startScrollTop - (moveEvent.clientY - startY);
+    };
+    const stopDragging = () => {
+      diagram.classList.remove("is-dragging");
+      diagram.removeEventListener("pointermove", onPointerMove);
+      diagram.removeEventListener("pointerup", stopDragging);
+      diagram.removeEventListener("pointercancel", stopDragging);
+    };
+
+    diagram.addEventListener("pointermove", onPointerMove);
+    diagram.addEventListener("pointerup", stopDragging, { once: true });
+    diagram.addEventListener("pointercancel", stopDragging, { once: true });
+  }
+
+  const resizeObserver = new ResizeObserver(updateDiagramSize);
+  resizeObserver.observe(diagram);
+  activeDiagramObservers.push(resizeObserver);
+  diagram.addEventListener("wheel", onWheel, { passive: false });
+  diagram.addEventListener("pointerdown", onPointerDown);
+  updateDiagramSize();
+}
+
+function disposeActiveDiagrams() {
+  activeDiagramObservers.forEach((observer) => observer.disconnect());
+  activeDiagramObservers = [];
+}
 
 function normalizeMermaidSvgText(svg) {
   return svg.replace(/>([^<]*)</g, (match, text) =>
@@ -17,6 +186,7 @@ function showError(error) {
     throw error;
   }
 
+  disposeActiveDiagrams();
   markdownPreviewElement.textContent = `Az előnézet nem tölthető be: ${
     error instanceof Error ? error.message : String(error)
   }`;
@@ -82,6 +252,7 @@ async function renderMarkdown() {
     if (!markdown) {
       activeCharts.forEach((chart) => chart.destroy());
       activeCharts = [];
+      disposeActiveDiagrams();
       markdownPreviewElement.innerHTML =
         '<p class="empty-state">Az előnézet itt jelenik meg.</p>';
       return;
@@ -129,6 +300,7 @@ async function renderMarkdown() {
 
     activeCharts.forEach((chart) => chart.destroy());
     activeCharts = [];
+    disposeActiveDiagrams();
 
     const renderer = new marked.Renderer();
     renderer.code = renderMarkdownUtils.renderCodeBlock;
@@ -154,6 +326,7 @@ async function renderMarkdown() {
           diagram.innerHTML = DOMPurify.sanitize(normalizeMermaidSvgText(svg), {
             USE_PROFILES: { svg: true, svgFilters: true },
           });
+          enableDiagramNavigation(diagram);
         } catch (error) {
           if (
             currentVersion !== markdownRenderVersion ||
@@ -237,6 +410,7 @@ async function renderMarkdown() {
           diagram.innerHTML = DOMPurify.sanitize(svg, {
             USE_PROFILES: { svg: true, svgFilters: true },
           });
+          enableDiagramNavigation(diagram);
         } catch (error) {
           diagram.classList.add("render-error");
           diagram.textContent = `A Graphviz diagram nem jeleníthető meg: ${

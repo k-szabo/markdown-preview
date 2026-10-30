@@ -1,5 +1,9 @@
 # Változások
 
+## 1.3.0 - 2026-10-30
+
+- Mermaid- és Graphviz-diagramok nagyítása és kicsinyítése egérgörgővel, valamint mozgatása húzással.
+
 ## 1.2.3 - 2026-10-29
 
 - Választható szerkesztő-, előnézet- és kétpaneles nézet.

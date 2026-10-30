@@ -444,28 +444,37 @@ body {
   max-width: 100%;
 }
 
-.markdown-body .mermaid {
-  display: flex;
-  justify-content: center;
-  overflow: auto;
-  margin: 0 0 1em;
-  padding: 12px;
-}
-
-.markdown-body .mermaid svg {
-  max-width: 100%;
-  height: auto;
-}
-
+.markdown-body .mermaid,
 .markdown-body .graphviz {
-  overflow: auto;
   margin: 0 0 1em;
   padding: 12px;
 }
 
-.markdown-body .graphviz svg {
-  max-width: 100%;
-  height: auto;
+.markdown-body .diagram-viewport {
+  position: relative;
+  max-height: min(70vh, 640px);
+  overflow: auto;
+  cursor: grab;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.markdown-body .diagram-viewport.is-dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.markdown-body .diagram-canvas {
+  position: relative;
+  margin: 0 auto;
+}
+
+.markdown-body .diagram-canvas svg {
+  display: block;
+}
+
+.markdown-body .mermaid-error {
+  cursor: auto;
 }
 
 .markdown-body .chart-container {
@@ -521,7 +530,6 @@ body {
 }
 
 .markdown-body .mermaid-error {
-  justify-content: flex-start;
   border: 1px solid var(--error-border);
   border-radius: 6px;
   color: var(--error-text);

@@ -6,7 +6,7 @@
 - `assets/css/styles.css` – alkalmazásstílusok és témák
 - `assets/js/dependencies.js` – külső könyvtárak betöltése és témastílusok
 - `assets/js/markdown.js` – Markdown-kiegészítők és kódblokkok feldolgozása
-- `assets/js/renderer.js` – az előnézet és diagramok renderelése
+- `assets/js/renderer.js` – az előnézet, diagramok renderelése és az SVG-diagramok navigációja
 - `assets/js/app.js` – felhasználói események és az alkalmazás indítása
 - `docs/CHANGELOG.md` – kiadások változásnaplója
 

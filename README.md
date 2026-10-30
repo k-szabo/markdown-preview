@@ -10,6 +10,8 @@ Első használatkor az alkalmazás a számítógéped színsémáját követi. A
 
 A **Nézet** gombokkal megjelenítheted mindkét panelt, vagy csak a szerkesztőt, illetve csak az előnézetet. Kétpaneles nézetben húzd az elválasztót a panelek átméretezéséhez; billentyűzettel az elválasztóra fókuszálva bármelyik nyílbillentyűvel módosíthatod az arányt: balra/felfelé csökkentheted, jobbra/lefelé növelheted a szerkesztő méretét.
 
+Az előnézetben a Mermaid- és Graphviz-diagramokat az egérgörgővel nagyíthatod vagy kicsinyítheted, majd bal egérgombbal húzva mozgathatod.
+
 ## Támogatott Markdown-elemek
 
 - Címsorok, bekezdések, felsorolások és számozott listák
