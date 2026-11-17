@@ -1,6 +1,6 @@
 # Markdown Preview
 
-Írj vagy illessz be Markdown-szöveget a bal oldali szerkesztőbe, és a jobb oldalon azonnal látod a formázott előnézetet.
+Írj vagy illessz be Markdown-szöveget a bal oldali szerkesztőbe, tölts fel egy `.md` fájlt, és a jobb oldalon azonnal látod a formázott előnézetet.
 
 [Élő oldal megnyitása a GitHub Pagesen](https://k-szabo.github.io/markdown-preview/)
 

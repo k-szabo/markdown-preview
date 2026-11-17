@@ -1,5 +1,8 @@
 const input = document.querySelector("#markdown-input");
 const themeToggle = document.querySelector("#theme-toggle");
+const uploadMarkdownButton = document.querySelector("#upload-markdown");
+const markdownFileInput = document.querySelector("#markdown-file");
+const uploadStatus = document.querySelector("#upload-status");
 const shareLinkButton = document.querySelector("#share-link");
 const shareStatus = document.querySelector("#share-status");
 const markdownRenderer = window.markdownPreviewRenderer;
@@ -76,6 +79,47 @@ function showShareStatus(message, isError = false) {
   shareStatus.textContent = message;
   shareStatus.dataset.error = String(isError);
 }
+
+function showUploadStatus(message, isError = false) {
+  if (!uploadStatus) {
+    return;
+  }
+  uploadStatus.textContent = message;
+  uploadStatus.dataset.error = String(isError);
+}
+
+uploadMarkdownButton?.addEventListener("click", () => {
+  markdownFileInput?.click();
+});
+
+markdownFileInput?.addEventListener("change", async () => {
+  const file = markdownFileInput.files?.[0];
+  if (!file) {
+    return;
+  }
+
+  if (!/\.(md|markdown)$/i.test(file.name)) {
+    showUploadStatus("Csak .md vagy .markdown fájl tölthető fel.", true);
+    markdownFileInput.value = "";
+    return;
+  }
+
+  try {
+    const markdown = await file.text();
+    input.value = markdown;
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    showUploadStatus(`Betöltve: ${file.name}`);
+  } catch (error) {
+    showUploadStatus(
+      `Nem sikerült beolvasni a fájlt: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+      true,
+    );
+  } finally {
+    markdownFileInput.value = "";
+  }
+});
 
 async function loadSharedMarkdown() {
   if (!input || !window.location.hash.startsWith("#markdown=")) {

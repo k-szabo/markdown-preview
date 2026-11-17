@@ -1,5 +1,9 @@
 # Változások
 
+## 1.5.0 - 2026-11-17
+
+- Markdown-fájl (`.md` vagy `.markdown`) tölthető be a szerkesztőbe, és annak tartalma az előnézetben is megjelenik.
+
 ## 1.4.0 - 2026-10-30
 
 - A megosztási link tömörített Markdown-tartalmat használ a rövidebb URL-ekért; a korábbi linkformátum továbbra is megnyitható.
