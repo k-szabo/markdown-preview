@@ -1,5 +1,9 @@
 # Változások
 
+## 1.6.0 - 2026-11-27
+
+- A szerkesztő egy gombnyomással kiüríthető.
+
 ## 1.5.0 - 2026-11-17
 
 - Markdown-fájl (`.md` vagy `.markdown`) tölthető be a szerkesztőbe, és annak tartalma az előnézetben is megjelenik.
