@@ -12,6 +12,9 @@ const workspace = document.querySelector(".workspace");
 const workspaceDivider = document.querySelector(".workspace-divider");
 const viewButtons = document.querySelectorAll(".view-controls [data-view]");
 const narrowLayout = window.matchMedia("(max-width: 700px)");
+const statusDurationMs = 5000;
+let statusTimeout;
+
 
 const appVersion = document.querySelector('meta[name="app-version"]')?.content;
 const versionLabel = document.querySelector("#app-version");
@@ -74,37 +77,31 @@ async function decodeMarkdown(hash) {
   return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
 }
 
-function showShareStatus(message, isError = false) {
-  if (!shareStatus) {
+function showStatus(statusElement, message, isError = false) {
+  if (!statusElement) {
     return;
   }
-  shareStatus.textContent = message;
-  shareStatus.dataset.error = String(isError);
-}
 
-function showUploadStatus(message, isError = false) {
-  if (!uploadStatus) {
-    return;
-  }
-  uploadStatus.textContent = message;
-  uploadStatus.dataset.error = String(isError);
-}
+  clearTimeout(statusTimeout);
 
-function showClearInputStatus(message, isError = false) {
-  if (!clearInputStatus) {
-    return;
+  statusElement.textContent = message;
+  statusElement.dataset.error = String(isError);
+
+  if (message && statusDurationMs > 0) {
+    statusTimeout = setTimeout(() =>{
+      statusElement.textContent = "";
+      delete statusElement.dataset.error;
+    }, statusDurationMs);
   }
-  clearInputStatus.textContent = message;
-  clearInputStatus.dataset.error = String(isError);
 }
 
 clearInputButton?.addEventListener("click", () => {
   try {
     input.value = "";
     input.dispatchEvent(new Event("input", { bubbles: true }));
-    showClearInputStatus("Szerkesztő mező kiürítve.");
+    showStatus(clearInputStatus, "Szerkesztő mező kiürítve.");
   } catch(error) {
-    showClearInputStatus(`Hiba történt a szerekesztő mező törlése során: ${error.message}`, true)
+    showStatus(clearInputStatus, `Hiba történt a szerekesztő mező törlése során: ${error.message}`, true)
   }
 });
 
@@ -119,7 +116,7 @@ markdownFileInput?.addEventListener("change", async () => {
   }
 
   if (!/\.(md|markdown)$/i.test(file.name)) {
-    showUploadStatus("Csak .md vagy .markdown fájl tölthető fel.", true);
+    showStatus(uploadStatus, "Csak .md vagy .markdown fájl tölthető fel.", true);
     markdownFileInput.value = "";
     return;
   }
@@ -128,9 +125,10 @@ markdownFileInput?.addEventListener("change", async () => {
     const markdown = await file.text();
     input.value = markdown;
     input.dispatchEvent(new Event("input", { bubbles: true }));
-    showUploadStatus(`Betöltve: ${file.name}`);
+    showStatus(uploadStatus, `Betöltve: ${file.name}`);
   } catch (error) {
-    showUploadStatus(
+    showStatus(
+      uploadStatus,
       `Nem sikerült beolvasni a fájlt: ${
         error instanceof Error ? error.message : String(error)
       }`,
@@ -148,10 +146,10 @@ async function loadSharedMarkdown() {
 
   try {
     input.value = await decodeMarkdown(window.location.hash);
-    showShareStatus("", false);
+    showStatus(uploadStatus, "");
     return true;
   } catch (error) {
-    showShareStatus(error.message, true);
+    showStatus(uploadStatus, error.message, true);
     return false;
   }
 }
@@ -201,9 +199,10 @@ shareLinkButton?.addEventListener("click", async () => {
     const url = new URL(window.location.href);
     url.hash = `markdown=${await encodeMarkdown(input.value)}`;
     await copyText(url.href);
-    showShareStatus("A megosztási link a vágólapra másolva.");
+    showStatus(shareStatus, "A megosztási link a vágólapra másolva.");
   } catch (error) {
-    showShareStatus(
+    showStatus(
+      shareStatus,
       `Nem sikerült a megosztási link másolása: ${error.message}`,
       true,
     );
