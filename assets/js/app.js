@@ -5,6 +5,8 @@ const markdownFileInput = document.querySelector("#markdown-file");
 const uploadStatus = document.querySelector("#upload-status");
 const shareLinkButton = document.querySelector("#share-link");
 const shareStatus = document.querySelector("#share-status");
+const clearInputButton = document.querySelector("#clear-input");
+const clearInputStatus = document.querySelector("#input-status");
 const markdownRenderer = window.markdownPreviewRenderer;
 const workspace = document.querySelector(".workspace");
 const workspaceDivider = document.querySelector(".workspace-divider");
@@ -87,6 +89,24 @@ function showUploadStatus(message, isError = false) {
   uploadStatus.textContent = message;
   uploadStatus.dataset.error = String(isError);
 }
+
+function showClearInputStatus(message, isError = false) {
+  if (!clearInputStatus) {
+    return;
+  }
+  clearInputStatus.textContent = message;
+  clearInputStatus.dataset.error = String(isError);
+}
+
+clearInputButton?.addEventListener("click", () => {
+  try {
+    input.value = "";
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    showClearInputStatus("Szerkesztő mező kiürítve.");
+  } catch(error) {
+    showClearInputStatus(`Hiba történt a szerekesztő mező törlése során: ${error.message}`, true)
+  }
+});
 
 uploadMarkdownButton?.addEventListener("click", () => {
   markdownFileInput?.click();
